@@ -22,8 +22,37 @@ def combine_inputs(file_name1, file_name2):
 def kmeans_plus_initialization(data_points, K):
     centroids = []
     centroids_indices = []
+    indieces = [i for i in range(len(data_points))]
+    new_centroid_index = np.random.randint(0, len(data_points) - 1)
+    centroids.append(data_points[data_points[new_centroid_index]])
+    centroids_indices.append(new_centroid_index)
+    print(centroids[0])
+
+    for i in range(K-1):
+        new_centroid_index = find_new_centroid(data_points, centroids, indieces)
+        centroids.append(data_points[new_centroid_index])
+        centroids_indices.append(new_centroid_index)
+        print(data_points[new_centroid_index])
     return centroids, centroids_indices
 
+def find_new_centroid(data_points, centroids, indeces):
+    vectors_sum = 0
+    vectors_d = [ 0 for i in range(len(data_points))]
+    for j in range(len(data_points)):
+        vectors_d[j] = find_vect_distance(data_points[j], centroids)
+        vectors_sum += vectors_d[j]
+
+    vectors_prob = [vectors_d[i]/vectors_sum for i in range(len(vectors_d))]
+    return np.random.choice(indeces, p = vectors_prob)
+
+
+def find_vect_distance(vector, centroids):
+    min_distance = sys.maxsize
+    for centroid in centroids:
+        tmp_distance = calculate_euclidean_distance(vector, centroid)
+        if tmp_distance < min_distance:
+            min_distance = tmp_distance
+    return min_distance
 
 def validity_check(K, iter_limit, epsilon, file_name1, file_name2):
     try:
