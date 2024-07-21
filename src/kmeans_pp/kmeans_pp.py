@@ -1,12 +1,16 @@
 import sys
+import pandas as pd
+
 
 def combine_inputs(file_name1, file_name2):
-    "Yoav said it's criti and Adu is still a bitch"
-    combined_data = []
-    return combined_data
+    data_points1 = pd.read_csv(file_name1)
+    data_points2 = pd.read_csv(file_name2)
+    combined_data_points = pd.merge(data_points1, data_points1, on=data_points1.columns[0])
+    combined_data_points = combined_data_points.sort_values(by=data_points1.columns[0])
+    return combined_data_points
 
 
-def kmeans_plus_initialization(data_points):
+def kmeans_plus_initialization(data_points, K):
     centroids = []
     centroids_indices = []
     return centroids, centroids_indices
@@ -74,10 +78,12 @@ def main():
         if data_points == 0:
             print("An Error Has Occurred")
             return
+        data_points = data_points.iloc[:, 1:].to_numpy()
+        print(data_points)
         K = int(float(K))
         iter_limit = int(float(iter_limit))
         epsilon = float(epsilon)
-        initialization_centroids = kmeans_plus_initialization(data_points)
+        initialization_centroids = kmeans_plus_initialization(data_points, K)
         """
         Call C code and do shit
         """
