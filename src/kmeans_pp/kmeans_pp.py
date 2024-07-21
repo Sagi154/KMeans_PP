@@ -1,5 +1,7 @@
 import sys
 import pandas as pd
+import numpy as np
+import math
 
 
 def combine_inputs(file_name1, file_name2):
@@ -54,6 +56,13 @@ def validity_check(K, iter_limit, epsilon, file_name1, file_name2):
     return data_points
 
 
+def calculate_euclidean_distance(vector1, vector2):
+    sum = 0
+    for i in range(len(vector1)):
+        sum += math.pow(vector1[i] - vector2[i], 2)
+    return math.sqrt(sum)
+
+
 def parse_arguments():
     if len(sys.argv) == 6:
         K = sys.argv[1]
@@ -89,7 +98,6 @@ def main():
         """
     except Exception as e:
         print("An Error Has Occurred")
-
 
 
 if __name__ == "__main__":
