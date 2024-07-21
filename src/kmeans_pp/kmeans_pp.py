@@ -5,10 +5,17 @@ import math
 
 
 def combine_inputs(file_name1, file_name2):
-    data_points1 = pd.read_csv(file_name1)
-    data_points2 = pd.read_csv(file_name2)
-    combined_data_points = pd.merge(data_points1, data_points1, on=data_points1.columns[0])
-    combined_data_points = combined_data_points.sort_values(by=data_points1.columns[0])
+    data_points1 = pd.read_csv(file_name1, header=None)
+    data_points2 = pd.read_csv(file_name2, header=None)
+
+    key_column = 0
+
+    data_points1.columns = ['key'] + [f'file1_col{i}' for i in range(1, len(data_points1.columns))]
+    data_points2.columns = ['key'] + [f'file2_col{i}' for i in range(1, len(data_points2.columns))]
+    data_points1['key'] = data_points1['key'].astype(int)
+    data_points2['key'] = data_points2['key'].astype(int)
+    combined_data_points = pd.merge(data_points1, data_points2, on='key', suffixes=('_left', '_right'))
+    combined_data_points = combined_data_points.sort_values(by='key', ascending=True)
     return combined_data_points
 
 
@@ -44,7 +51,6 @@ def validity_check(K, iter_limit, epsilon, file_name1, file_name2):
     except Exception as e:
         print("Invalid epsilon!")
         return 0
-
     if not 1 < iter_limit < 1000:
         print("Invalid maximum iteration!")
         return 0
@@ -84,15 +90,13 @@ def main():
     K, iter_limit, epsilon, file_name1, file_name2 = parse_arguments()
     try:
         data_points = validity_check(K, iter_limit, epsilon, file_name1, file_name2)
-        if data_points == 0:
-            print("An Error Has Occurred")
+        if isinstance(data_points, int):
             return
         data_points = data_points.iloc[:, 1:].to_numpy()
-        print(data_points)
         K = int(float(K))
         iter_limit = int(float(iter_limit))
         epsilon = float(epsilon)
-        initialization_centroids = kmeans_plus_initialization(data_points, K)
+        # initialization_centroids = kmeans_plus_initialization(data_points, K)
         """
         Call C code and do shit
         """
