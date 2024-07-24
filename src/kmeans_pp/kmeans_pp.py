@@ -125,7 +125,7 @@ def main():
         K = int(float(K))
         iter_limit = int(float(iter_limit))
         epsilon = float(epsilon)
-        # initialization_centroids = kmeans_plus_initialization(data_points, K)
+        initialization_centroids = kmeans_plus_initialization(data_points, K)
         """
         Call C code and do shit
         """
